@@ -15,7 +15,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG")
+DEBUG = os.getenv("DEBUG").lower() == 'true'
 
 ALLOWED_HOSTS = ["*"]
 
@@ -60,9 +60,13 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware'
 ]
+
+CORS_ALLOW_ALL_ORIGINS = True
+
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3000",  # Frontend URL
-    "http://localhost:5173"
+    "http://localhost:5173",
+    "https://community-event-frontend.vercel.app"
 ]
 
 ROOT_URLCONF = 'urls'
