@@ -1,4 +1,4 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from events.models import Event
@@ -15,19 +15,16 @@ class EventViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         return super().perform_create(serializer.save(organizer=self.request.user))
 
-    def get_queryset(self):
-        return super().get_queryset().filter(organizer=self.request.user).order_by('-id')
+    # def get_queryset(self):
+    #     return super().get_queryset().filter(organizer=self.request.user).order_by('-id')
 
-    # @action(detail=False, methods=['get'])
-    # def custom_action(self, request):
-    #     # Custom action logic here
-    #     data = {"message": "Custom action response"}
-    #     return Response(data)
+    @action(detail=True, methods=['post'],url_path='participants')
+    def participants(self, request, pk=None):
+        event = self.get_object()
+        user = request.user
+        event.participants
+        if event.participants.filter(id=user.id).exists():
+            return Response({'status': 'You have already Joined'}, status=status.HTTP_400_BAD_REQUEST)
+        event.participants.add(user)
+        return Response({'status': 'JOined successful'}, status=status.HTTP_200_OK)
 
-    # @action(detail=True, methods=['get'])
-    # def special_detail(self, request, pk=None):
-    #     # Custom detail action logic here
-    #     event = self.get_object()
-    #     serializer = self.get_serializer(event)
-    #     data = {"event": serializer.data, "special_info": "Additional data"}
-    #     return Response(data)
